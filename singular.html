@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Chatbot Vivienda Modular</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 20px;
+      background: linear-gradient(to right, #e0f7fa, #f8f9fa);
+    }
+    .chat {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      color: #0077b6;
+    }
+    .question {
+      margin-top: 20px;
+    }
+    label {
+      font-weight: bold;
+    }
+    select, button, .extras input {
+      padding: 10px;
+      margin-top: 8px;
+      width: 100%;
+      font-size: 1rem;
+    }
+    .extras label {
+      display: block;
+      margin-top: 8px;
+      font-weight: normal;
+    }
+    button {
+      background-color: #0077b6;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #005f87;
+    }
+    .result {
+      margin-top: 30px;
+      background: #e3f2fd;
+      padding: 15px;
+      border-left: 5px solid #0077b6;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+<div class="chat">
+  <h2>🏡 Estimador de Viviendas Modulares</h2>
+
+  <div class="question">
+    <label for="habitaciones">¿Cuántas habitaciones quieres?</label>
+    <select id="habitaciones">
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+    </select>
+  </div>
+
+  <div class="question">
+    <label for="metros">¿Cuántos metros cuadrados?</label>
+    <select id="metros">
+      <option value="40">40 m²</option>
+      <option value="60">60 m²</option>
+      <option value="100">100 m²</option>
+      <option value="140">140 m²</option>
+    </select>
+  </div>
+
+  <div class="question">
+    <label for="calidad">Calidad de acabados</label>
+    <select id="calidad">
+      <option value="Básica">Básica</option>
+      <option value="Estándar">Estándar</option>
+      <option value="Premium">Premium</option>
+      <option value="Lujo / Passivhaus">Lujo / Passivhaus</option>
+    </select>
+  </div>
+
+  <div class="question extras">
+    <label>¿Qué extras quieres añadir? (puedes elegir varios)</label>
+    <label><input type="checkbox" value="Piscina"> Piscina (+15.000 €)</label>
+    <label><input type="checkbox" value="Porche"> Porche (+7.000 €)</label>
+    <label><input type="checkbox" value="Placas solares"> Placas solares (+9.000 €)</label>
+    <label><input type="checkbox" value="Garaje"> Garaje (+10.000 €)</label>
+  </div>
+
+  <button onclick="calcularPrecio()">Calcular presupuesto</button>
+
+  <div class="result" id="resultado"></div>
+</div>
+
+<script>
+  const preciosM2 = {
+    "Básica": 1100,
+    "Estándar": 1400,
+    "Premium": 1800,
+    "Lujo / Passivhaus": 2200
+  };
+
+  const extras = {
+    "Piscina": 15000,
+    "Porche": 7000,
+    "Placas solares": 9000,
+    "Garaje": 10000
+  };
+
+  function calcularPrecio() {
+    const habitaciones = document.getElementById("habitaciones").value;
+    const metros = parseInt(document.getElementById("metros").value);
+    const calidad = document.getElementById("calidad").value;
+
+    let extrasSeleccionados = [];
+    let totalExtras = 0;
+    document.querySelectorAll('.extras input[type="checkbox"]:checked').forEach(cb => {
+      extrasSeleccionados.push(cb.value);
+      totalExtras += extras[cb.value] || 0;
+    });
+
+    const precioBase = metros * preciosM2[calidad];
+    const precioTotal = precioBase + totalExtras;
+
+    document.getElementById("resultado").innerHTML =
+      `<strong>Resultado:</strong><br>
+       Vivienda de ${habitaciones} hab., ${metros} m², calidad "${calidad}"<br>
+       Extras: ${extrasSeleccionados.length > 0 ? extrasSeleccionados.join(", ") : "Ninguno"}.<br>
+       <strong>Precio estimado:</strong> ${precioTotal.toLocaleString()} €`;
+  }
+</script>
+</body>
+</html>
